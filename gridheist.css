@@ -1,0 +1,70 @@
+/* ==========================================================
+ * gridheist.js v0.0.1
+ * A jQuery plugin to hijack an image gallery, making it great.
+ * http://github.com/cavis/gridheist
+ * ==========================================================
+ * Copyright (c) 2013 Ryan Cavis
+ * Licensed under http://en.wikipedia.org/wiki/MIT_License
+ * ========================================================== */
+
+/* the main event */
+.gridheist-gallery {
+  position: relative;
+}
+
+/* thumbnails hide any overflowing img content */
+.gridheist-thumb {
+  display: block;
+  float: left;
+  overflow: hidden;
+  margin: 0 10px 10px 0;
+}
+.gridheist-thumb img {
+  display: block;
+}
+
+/* expanded viewpanel */
+.gridheist-expander {
+  display: block;
+  float: left;
+  height: 200px;
+  width: 100%;
+  background: #333;
+  position: relative;
+}
+.gridheist-expander-img {
+  text-align: center;
+}
+.gridheist-expander-img img {
+  max-height: 100%;
+  max-width: 100%;
+}
+.gridheist-expander-arrow {
+  height: 0;
+  position: absolute;
+  width: 0px;
+  border: 10px solid transparent;
+  border-bottom-color: #333;
+  bottom: 100%;
+}
+
+/* the optional right-sidebar in expander */
+.gridheist-expander-side {
+  width: 200px;
+  height: 100%;
+  float: right;
+  position: relative;
+}
+.gridheist-expander-seperator {
+  position: absolute;
+  left: 0;
+  top: 20px;
+  bottom: 20px;
+  background: #444;
+  border-right: 1px solid #666;
+  width: 1px;
+}
+.gridheist-expander-content {
+  padding: 10px 20px;
+  color: #eee;
+}

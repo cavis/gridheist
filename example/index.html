@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>GridHeist Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Example of GridHeist jquery plugin">
+    <meta name="author" content="cavis">
+
+    <!-- styles -->
+    <link href="../gridheist.css" rel="stylesheet">
+    <style type="text/css">
+      #title { margin: 0 100px; }
+      #gallery { background: #ddd; margin: 0 100px; padding: 10px 10px 0; }
+      #gallery:after { content: ""; display: table; clear: both; }
+    </style>
+  </head>
+
+  <body>
+
+    <div id="title">
+      <h1>GridHeist Demo</h1>
+      <p>Resize your browser window to see what happens</p>
+    </div>
+
+    <!-- options pickers -->
+    <div id="options" class="center">
+    </div>
+
+    <!-- gallery -->
+    <div id="gallery">
+
+      <!-- some random-ish aspect ratios, but thumbnails all same height -->
+      <a class="thumb" href="http://lorempixel.com/640/640/people/1/1-to-1">
+        <img src="http://lorempixel.com/200/200/people/1/1-to-1"/>
+      </a>
+      <a class="thumb" href="http://lorempixel.com/800/600/people/2/4-to-3">
+        <img src="http://lorempixel.com/267/200/people/2/4-to-3"/>
+      </a>
+      <a class="thumb" href="http://lorempixel.com/900/600/people/3/3-to-2">
+        <img src="http://lorempixel.com/300/200/people/3/3-to-2"/>
+      </a>
+      <a class="thumb" href="http://lorempixel.com/900/900/people/4/1-to-1">
+        <img src="http://lorempixel.com/200/200/people/4/1-to-1"/>
+      </a>
+      <a class="thumb" href="http://lorempixel.com/1068/800/people/5/4-to-3">
+        <img src="http://lorempixel.com/267/200/people/5/4-to-3"/>
+      </a>
+      <a class="thumb" href="http://lorempixel.com/1600/900/people/6/16-to-9">
+        <img src="http://lorempixel.com/356/200/people/6/16-to-9"/>
+      </a>
+      <a class="thumb" href="http://lorempixel.com/1068/800/people/7/4-to-3">
+        <img src="http://lorempixel.com/267/200/people/7/4-to-3"/>
+      </a>
+      <a class="thumb" href="http://lorempixel.com/800/600/people/8/4-to-3">
+        <img src="http://lorempixel.com/267/200/people/8/4-to-3"/>
+      </a>
+      <a class="thumb" href="http://lorempixel.com/900/600/people/9/3-to-2">
+        <img src="http://lorempixel.com/300/200/people/9/3-to-2"/>
+      </a>
+      <a class="thumb" href="http://lorempixel.com/800/800/people/10/1-to-1">
+        <img src="http://lorempixel.com/200/200/people/10/1-to-1"/>
+      </a>
+    </div>
+
+    <!-- javascripts -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="../gridheist.js"></script>
+
+    <!-- initialize the gallery -->
+    <script type="text/javascript">
+
+      // options
+      var opts = {
+        expandSideRender: function($target) {
+          var href = 'href="' + $target.attr('href') + '"';
+          var str  = '<h3>Dynamic Sidebar</h3>';
+          str += '<br/><a ' + href + ' target="_blank">View Original</a>';
+          return str;
+        }
+      };
+
+      // do it!
+      $('#gallery').gridHeist(opts);
+
+    </script>
+
+  </body>
+</html>
+
+
+
