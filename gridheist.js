@@ -22,6 +22,7 @@
         thumbSelector: '> *',
         thumbBorder: 10,
         thumbMinHeight: 200,
+        preloadImages: true,
         expandHeight: 300,
         expandSideWidth: 200,
         expandSideRender: false
@@ -90,8 +91,13 @@
               return _this.processThumb(idx + 1, rowIdx, rowWidth);
             }
           });
-        } else if (this.rows[rowIdx]) {
-          return this.layoutRow(rowIdx, rowWidth);
+        } else {
+          if (this.rows[rowIdx]) {
+            this.layoutRow(rowIdx, rowWidth);
+          }
+          if (this.options.preloadImages) {
+            return this.preload();
+          }
         }
       };
 
@@ -146,6 +152,12 @@
             src: $img.attr('src')
           });
         }
+      };
+
+      GridHeist.prototype.preload = function() {
+        return this.$thumbs.each(function(idx, thumb) {
+          return (new Image()).src = $(thumb).attr('href');
+        });
       };
 
       GridHeist.prototype.clickHandler = function(e) {

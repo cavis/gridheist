@@ -15,3 +15,4 @@ GridHeist Versions
 * Key listeners (left-right-escape)
 * Scrollbar changer (when keying through)
 * Better event cleanup
+* Image preloading option

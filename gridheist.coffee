@@ -22,6 +22,7 @@
       thumbSelector:    '> *'
       thumbBorder:      10
       thumbMinHeight:   200
+      preloadImages:    true
       expandHeight:     300
       expandSideWidth:  200
       expandSideRender: false
@@ -89,9 +90,10 @@
           else
             @processThumb(idx + 1, rowIdx, rowWidth)
 
-      # layout last non-full row
-      else if @rows[rowIdx]
-        @layoutRow(rowIdx, rowWidth)
+      # layout last non-full row, and start pre-loading the big images
+      else
+        @layoutRow(rowIdx, rowWidth) if @rows[rowIdx]
+        @preload() if @options.preloadImages
 
     # expand a row to fill the full width
     layoutRow: (rowIdx, rowWidth) ->
@@ -139,6 +141,10 @@
             callback(100, 100)
           .attr
             src: $img.attr('src')
+
+    # preload the big images
+    preload: ->
+      @$thumbs.each (idx, thumb) -> (new Image()).src = $(thumb).attr('href')
 
     # handle clicking on a thumbnail
     clickHandler: (e) =>

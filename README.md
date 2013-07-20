@@ -68,11 +68,11 @@ Galleries should have semi-standardized markup.  For now, all your thumbnails (t
       </a>
     </div>
 
-If you want things to load snappier, I'd recommend pre-populating the `data-width` of the thumbnail images, so we don't have to wait for the `<img>` to load before we can get the native dimensions.
+If you want things to load snappier, I'd recommend pre-populating the `data-width` and `data-height` of the thumbnail images, so we don't have to wait for the `<img>` to load before we can get the native dimensions.
 
     <div id="gallery">
       <a href="img/something1_big.png">
-        <img src="img/something1_thumb.png" data-width="300"/>
+        <img src="img/something1_thumb.png" data-width="300" data-height="200"/>
       </a>
     </div>
 
@@ -80,7 +80,21 @@ If you want things to load snappier, I'd recommend pre-populating the `data-widt
 Options
 ------------
 
-TODO
+These options can be passed in when you create the gridheist.  Numbers are probably something in `px`, unless otherwise noted.
+
+`thumbSelector` - A jQuery selector to get the thumbnail objects within the element - __(default: `> *`)__
+
+`thumbBorder` - Border width between thumbnails - __(default: `10`)__
+
+`thumbMinHeight` - Minimum height of a row of thumbnails - __(default: `200`)__
+
+`preloadImages` - Preloads the big-kid images (set by the href attribute) after the thumbnails are all loaded - __(default: `true`)__
+
+`expandHeight` - Height of the expander-row - __(default: `300`)__
+
+`expandSideRender` - Function to return markup for the expander sidebar; passed the jQuery `$thumb` object - __(default: `false`)__
+
+`expandSideWidth` - Width of the expander sidebar (if expandSideRender is passed) - __(default: `200`)__
 
 
 Methods
