@@ -1,5 +1,5 @@
 // ==============================================================
-// gridheist.js v0.0.1
+// gridheist.js v0.0.2
 // A jQuery plugin to hijack an image gallery, making it great.
 // http://github.com/cavis/gridheist
 // ==============================================================
@@ -21,12 +21,14 @@
       GridHeist.prototype.defaults = {
         thumbSelector: '> *',
         thumbBorder: 10,
+        thumbMinHeight: 200,
         expandHeight: 300,
         expandSideWidth: 200,
         expandSideRender: false
       };
 
       function GridHeist(el, options) {
+        this.keyHandler = __bind(this.keyHandler, this);
         this.clickHandler = __bind(this.clickHandler, this);
         var _this = this;
         this.options = $.extend({}, this.defaults, options);
@@ -49,9 +51,7 @@
 
       GridHeist.prototype.doLayout = function() {
         var margin;
-        if (this.$expander) {
-          this.$expander.remove();
-        }
+        this.closeExpander();
         this.width = this.$el.width();
         this.rows = [];
         margin = "0 " + this.options.thumbBorder + "px " + this.options.thumbBorder + "px 0";
@@ -65,17 +65,19 @@
         if (idx < this.$thumbs.length) {
           $thumb = this.$thumbs.eq(idx);
           $img = $thumb.find('img');
-          return this.getImageWidth($img, function(imgWidth) {
+          return this.getDimensions($img, function(imgWidth, imgHeight) {
             if (!_this.rows[rowIdx]) {
               _this.rows[rowIdx] = {
                 thumbs: [],
                 images: [],
-                widths: []
+                widths: [],
+                heights: []
               };
             }
             _this.rows[rowIdx].thumbs.push($thumb);
             _this.rows[rowIdx].images.push($img);
             _this.rows[rowIdx].widths.push(imgWidth);
+            _this.rows[rowIdx].heights.push(imgHeight);
             $thumb.data('row', rowIdx);
             if (rowWidth !== 0) {
               rowWidth += _this.options.thumbBorder;
@@ -94,17 +96,29 @@
       };
 
       GridHeist.prototype.layoutRow = function(rowIdx, rowWidth) {
-        var $thumb, center, idx, margin, rowDebt, thumbDebt, _i, _len, _ref, _results;
-        rowDebt = Math.max(rowWidth - this.width, 0);
-        _ref = this.rows[rowIdx].thumbs;
-        _results = [];
+        var $thumb, center, h, idx, margin, minHeight, rowDebt, thumbDebt, vertic, _i, _j, _len, _len1, _ref, _ref1, _results;
+        minHeight = 9999;
+        _ref = this.rows[rowIdx].heights;
         for (idx = _i = 0, _len = _ref.length; _i < _len; idx = ++_i) {
-          $thumb = _ref[idx];
+          h = _ref[idx];
+          if (h < minHeight) {
+            minHeight = h;
+          }
+        }
+        minHeight = Math.max(this.options.thumbMinHeight, minHeight);
+        rowDebt = Math.max(rowWidth - this.width, 0);
+        _ref1 = this.rows[rowIdx].thumbs;
+        _results = [];
+        for (idx = _j = 0, _len1 = _ref1.length; _j < _len1; idx = ++_j) {
+          $thumb = _ref1[idx];
           thumbDebt = Math.ceil(rowDebt / (this.rows[rowIdx].thumbs.length - idx));
           rowDebt -= thumbDebt;
           $thumb.css('width', this.rows[rowIdx].widths[idx] - thumbDebt);
+          $thumb.css('height', minHeight);
           center = Math.floor(thumbDebt / 2);
+          vertic = Math.floor((this.rows[rowIdx].heights[idx] - minHeight) / 2);
           this.rows[rowIdx].images[idx].css('margin-left', -center);
+          this.rows[rowIdx].images[idx].css('margin-top', -vertic);
           if (idx === this.rows[rowIdx].thumbs.length - 1) {
             margin = "0 0 " + this.options.thumbBorder + "px 0";
             _results.push($thumb.css('margin', margin));
@@ -115,53 +129,113 @@
         return _results;
       };
 
-      GridHeist.prototype.getImageWidth = function($img, callback) {
-        var tmp, w;
-        if (w = $img.data('width')) {
-          return callback(w);
+      GridHeist.prototype.getDimensions = function($img, callback) {
+        var h, tmp, w;
+        if ((w = $img.data('width')) && (h = $img.data('height'))) {
+          return callback(w, h);
         } else {
           tmp = new Image();
           return $(tmp).load(function() {
             $img.data('width', tmp.width);
-            return callback(tmp.width);
+            $img.data('height', tmp.height);
+            return callback(tmp.width, tmp.height);
           }).error(function() {
             console.error('An error occurred and your image could not be loaded.  Please try again.');
-            return callback(0);
+            return callback(100, 100);
           }).attr({
             src: $img.attr('src')
           });
         }
       };
 
-      GridHeist.prototype.clickHandler = function(e, other) {
-        var $last, $target, href, rowIdx;
+      GridHeist.prototype.clickHandler = function(e) {
+        var $thumb;
         e.preventDefault();
-        $target = $(e.currentTarget);
-        rowIdx = $target.data('row');
-        href = $target.attr('href');
-        $last = this.rows[rowIdx].thumbs[this.rows[rowIdx].thumbs.length - 1];
-        return this.renderExpander($last, href, $target);
+        $thumb = $(e.currentTarget);
+        if (!$thumb.hasClass('expanded')) {
+          return this.expandThumb($thumb);
+        }
       };
 
-      GridHeist.prototype.renderExpander = function($after, src, $target) {
-        var align, bordr, width;
-        if (this.$expander) {
-          this.$expander.remove();
+      GridHeist.prototype.keyHandler = function(e) {
+        var $curr, $next, $prev, code;
+        code = e.keyCode || e.which;
+        if (code === 37) {
+          $curr = this.$el.find('.gridheist-thumb.expanded');
+          $prev = $curr.prevAll('.gridheist-thumb').first();
+          if ($prev.length > 0) {
+            return this.expandThumb($prev, 'up');
+          } else {
+            return this.closeExpander();
+          }
+        } else if (code === 39) {
+          $curr = this.$el.find('.gridheist-thumb.expanded');
+          $next = $curr.nextAll('.gridheist-thumb').first();
+          if ($next.length > 0) {
+            return this.expandThumb($next, 'down');
+          } else {
+            return this.closeExpander();
+          }
+        } else if (code === 27) {
+          return this.closeExpander();
         }
+      };
+
+      GridHeist.prototype.expandThumb = function($thumb, doScroll) {
+        var $lastThumb, align, bordr, diff, imgSrc, rowIdx, scrollTo, width;
+        if (doScroll == null) {
+          doScroll = null;
+        }
+        rowIdx = $thumb.data('row');
+        imgSrc = $thumb.attr('href');
+        $lastThumb = this.rows[rowIdx].thumbs[this.rows[rowIdx].thumbs.length - 1];
+        scrollTo = null;
         this.$el.find('.gridheist-thumb.expanded').removeClass('expanded');
-        $target.addClass('expanded');
-        this.$expander = $('<div class="gridheist-expander"></div>');
+        $thumb.addClass('expanded');
+        if (doScroll) {
+          scrollTo = $('body').scrollTop();
+          diff = this.options.thumbBorder + $thumb.height();
+          if (doScroll === 'up') {
+            scrollTo -= diff;
+          } else {
+            scrollTo += diff;
+          }
+        }
+        if (!this.$expander) {
+          doScroll = false;
+          this.$expander = $('<div class="gridheist-expander"></div>');
+          $(document).on('keydown', this.keyHandler);
+        } else if (!this.$expander.prev().is($lastThumb)) {
+          this.$expander.remove();
+          this.$expander = $('<div class="gridheist-expander"></div>');
+        } else {
+          doScroll = false;
+          this.$expander.html('');
+        }
         this.$expander.css('margin-bottom', this.options.thumbBorder);
         this.$expander.css('height', this.options.expandHeight);
         if (this.options.expandSideRender) {
           width = this.options.expandSideWidth;
-          this.$expander.append("<div class=\"gridheist-expander-side\" style=\"width:" + width + "px\">\n  <div class=\"gridheist-expander-seperator\"></div>\n  <div class=\"gridheist-expander-content\">\n    " + (this.options.expandSideRender($target)) + "\n  </div>\n</div>");
+          this.$expander.append("<div class=\"gridheist-expander-side\" style=\"width:" + width + "px\">\n  <div class=\"gridheist-expander-seperator\"></div>\n  <div class=\"gridheist-expander-content\">\n    " + (this.options.expandSideRender($thumb)) + "\n  </div>\n</div>");
         }
-        align = $target.position().left + ($target.width() / 2);
+        align = $thumb.position().left + ($thumb.width() / 2);
         bordr = this.options.thumbBorder;
         this.$expander.append("<div class=\"gridheist-expander-arrow\" style=\"left:" + align + "px;\n  border-width:" + bordr + "px; margin-left:-" + bordr + "px;\">\n</div>");
-        this.$expander.append("<div class=\"gridheist-expander-img\">\n  <img src=\"" + src + "\"/>\n</div>");
-        return $after.after(this.$expander);
+        this.$expander.append("<div class=\"gridheist-expander-img\">\n  <img src=\"" + imgSrc + "\"/>\n</div>");
+        if (!this.$expander.parent().length) {
+          $lastThumb.after(this.$expander);
+        }
+        if (doScroll) {
+          return $('body').scrollTop(scrollTo);
+        }
+      };
+
+      GridHeist.prototype.closeExpander = function() {
+        if (this.$expander) {
+          this.$expander.remove();
+          this.$expander = void 0;
+          return $(document).off('keydown', this.keyHandler);
+        }
       };
 
       return GridHeist;
