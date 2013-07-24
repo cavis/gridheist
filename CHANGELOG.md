@@ -16,3 +16,4 @@ GridHeist Versions
 * Scrollbar changer (when keying through)
 * Better event cleanup
 * Image preloading option
+* Grid images can't have a max-width set (bootstrap tries to do this)

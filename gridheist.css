@@ -21,6 +21,7 @@
 }
 .gridheist-thumb img {
   display: block;
+  max-width: none;
 }
 
 /* expanded viewpanel */
