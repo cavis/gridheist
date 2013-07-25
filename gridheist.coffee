@@ -1,5 +1,5 @@
 # ==============================================================
-# gridheist.js v0.0.2
+# gridheist.js v0.0.3
 # A jQuery plugin to hijack an image gallery, making it great.
 # http://github.com/cavis/gridheist
 # ==============================================================
@@ -22,6 +22,7 @@
       thumbSelector:    '> *'
       thumbBorder:      10
       thumbMinHeight:   200
+      thumbMaxHeight:   null
       preloadImages:    true
       expandHeight:     300
       expandSideWidth:  200
@@ -30,11 +31,18 @@
     # initialize it!
     constructor: (el, options) ->
       @options = $.extend({}, @defaults, options)
+      if @options.thumbMaxHeight && @options.thumbMaxHeight < @options.thumbMinHeight
+        @options.thumbMinHeight = @options.thumbMaxHeight
 
       # gallery element
       @$el = $(el)
       @$el.addClass('gridheist-gallery')
       @$el.on 'click', '.gridheist-thumb', @clickHandler
+
+      # bind some events (global level, so we can dynamically add thumbs)
+      @$el.on 'click', '.gridheist-left',  => @moveLeft()
+      @$el.on 'click', '.gridheist-right', => @moveRight()
+      @$el.on 'click', '.gridheist-close', => @closeExpander()
 
       # initial update/layout
       @update()
@@ -71,6 +79,13 @@
         @getDimensions $img, (imgWidth, imgHeight) =>
           unless @rows[rowIdx]
             @rows[rowIdx] = {thumbs: [], images: [], widths: [], heights: []}
+
+          # optionally scale DOWN to height
+          if @options.thumbMaxHeight && imgHeight > @options.thumbMaxHeight
+            imgWidth = (@options.thumbMaxHeight / imgHeight) * imgWidth
+            imgHeight = @options.thumbMaxHeight
+            $img.attr('width', imgWidth)
+            $img.attr('height', imgHeight)
 
           # add to the row
           @rows[rowIdx].thumbs.push($thumb)
@@ -152,19 +167,24 @@
       $thumb = $(e.currentTarget)
       @expandThumb($thumb) unless $thumb.hasClass('expanded')
 
+    # flip to the left
+    moveLeft: (e) =>
+      $curr = @$el.find('.gridheist-thumb.expanded')
+      $prev = $curr.prevAll('.gridheist-thumb').first()
+      if $prev.length > 0 then @expandThumb($prev, 'up') else @closeExpander()
+
+    # flip to the right
+    moveRight: (e) =>
+      $curr = @$el.find('.gridheist-thumb.expanded')
+      $next = $curr.nextAll('.gridheist-thumb').first()
+      if $next.length > 0 then @expandThumb($next, 'down') else @closeExpander()
+
     # handle left/right/escape keys
     keyHandler: (e) =>
       code = e.keyCode || e.which
-      if code == 37 # left
-        $curr = @$el.find('.gridheist-thumb.expanded')
-        $prev = $curr.prevAll('.gridheist-thumb').first()
-        if $prev.length > 0 then @expandThumb($prev, 'up') else @closeExpander()
-      else if code == 39 # right
-        $curr = @$el.find('.gridheist-thumb.expanded')
-        $next = $curr.nextAll('.gridheist-thumb').first()
-        if $next.length > 0 then @expandThumb($next, 'down') else @closeExpander()
-      else if code == 27 # escape
-        @closeExpander()
+      @moveLeft() if code == 37
+      @moveRight() if code == 39
+      @closeExpander if code == 27 # escape
 
     # render the row-expander for a thumbnail
     expandThumb: ($thumb, doScroll=null) ->
@@ -211,14 +231,21 @@
           </div>
         """)
 
-      # draw the arrow to the expanded picture
+      # arrow to expanded img, left/right nav, and close button
       align = $thumb.position().left + ($thumb.width() / 2)
       bordr = @options.thumbBorder
       @$expander.append("""
         <div class="gridheist-expander-arrow" style="left:#{align}px;
           border-width:#{bordr}px; margin-left:-#{bordr}px;">
         </div>
+        <div class="gridheist-left">&lsaquo;</div>
+        <div class="gridheist-right">&rsaquo;</div>
+        <div class="gridheist-close">&times;</div>
       """)
+
+      # disable selections
+      @$expander.find('.gridheist-left, .gridheist-right, .gridheist-close')
+        .attr('unselectable', 'on').css('user-select', 'none').on('selectstart', false);
 
       # add the image
       @$expander.append("""
@@ -233,6 +260,7 @@
 
     # close down the expander and remove key listeners
     closeExpander: ->
+      @$el.find('.expanded').removeClass('expanded')
       if @$expander
         @$expander.remove()
         @$expander = undefined

@@ -88,6 +88,8 @@ These options can be passed in when you create the gridheist.  Numbers are proba
 
 `thumbMinHeight` - Minimum height of a row of thumbnails - __(default: `200`)__
 
+`thumbMaxHeight` - Maximum height of a row of thumbnails - __(default: `null`)__
+
 `preloadImages` - Preloads the big-kid images (set by the href attribute) after the thumbnails are all loaded - __(default: `true`)__
 
 `expandHeight` - Height of the expander-row - __(default: `300`)__

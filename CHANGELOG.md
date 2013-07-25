@@ -17,3 +17,10 @@ GridHeist Versions
 * Better event cleanup
 * Image preloading option
 * Grid images can't have a max-width set (bootstrap tries to do this)
+
+0.0.3
+------------
+* Bugfixes
+* Add thumbMaxHeight option to scale down image heights
+* Add left/right/close buttons to expander
+* Unselectable buttons

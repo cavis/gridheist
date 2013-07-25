@@ -1,5 +1,5 @@
 // ==============================================================
-// gridheist.js v0.0.2
+// gridheist.js v0.0.3
 // A jQuery plugin to hijack an image gallery, making it great.
 // http://github.com/cavis/gridheist
 // ==============================================================
@@ -22,6 +22,7 @@
         thumbSelector: '> *',
         thumbBorder: 10,
         thumbMinHeight: 200,
+        thumbMaxHeight: null,
         preloadImages: true,
         expandHeight: 300,
         expandSideWidth: 200,
@@ -30,12 +31,26 @@
 
       function GridHeist(el, options) {
         this.keyHandler = __bind(this.keyHandler, this);
+        this.moveRight = __bind(this.moveRight, this);
+        this.moveLeft = __bind(this.moveLeft, this);
         this.clickHandler = __bind(this.clickHandler, this);
         var _this = this;
         this.options = $.extend({}, this.defaults, options);
+        if (this.options.thumbMaxHeight && this.options.thumbMaxHeight < this.options.thumbMinHeight) {
+          this.options.thumbMinHeight = this.options.thumbMaxHeight;
+        }
         this.$el = $(el);
         this.$el.addClass('gridheist-gallery');
         this.$el.on('click', '.gridheist-thumb', this.clickHandler);
+        this.$el.on('click', '.gridheist-left', function() {
+          return _this.moveLeft();
+        });
+        this.$el.on('click', '.gridheist-right', function() {
+          return _this.moveRight();
+        });
+        this.$el.on('click', '.gridheist-close', function() {
+          return _this.closeExpander();
+        });
         this.update();
         $(window).resize(function() {
           if (_this.width !== _this.$el.width()) {
@@ -74,6 +89,12 @@
                 widths: [],
                 heights: []
               };
+            }
+            if (_this.options.thumbMaxHeight && imgHeight > _this.options.thumbMaxHeight) {
+              imgWidth = (_this.options.thumbMaxHeight / imgHeight) * imgWidth;
+              imgHeight = _this.options.thumbMaxHeight;
+              $img.attr('width', imgWidth);
+              $img.attr('height', imgHeight);
             }
             _this.rows[rowIdx].thumbs.push($thumb);
             _this.rows[rowIdx].images.push($img);
@@ -169,27 +190,39 @@
         }
       };
 
+      GridHeist.prototype.moveLeft = function(e) {
+        var $curr, $prev;
+        $curr = this.$el.find('.gridheist-thumb.expanded');
+        $prev = $curr.prevAll('.gridheist-thumb').first();
+        if ($prev.length > 0) {
+          return this.expandThumb($prev, 'up');
+        } else {
+          return this.closeExpander();
+        }
+      };
+
+      GridHeist.prototype.moveRight = function(e) {
+        var $curr, $next;
+        $curr = this.$el.find('.gridheist-thumb.expanded');
+        $next = $curr.nextAll('.gridheist-thumb').first();
+        if ($next.length > 0) {
+          return this.expandThumb($next, 'down');
+        } else {
+          return this.closeExpander();
+        }
+      };
+
       GridHeist.prototype.keyHandler = function(e) {
-        var $curr, $next, $prev, code;
+        var code;
         code = e.keyCode || e.which;
         if (code === 37) {
-          $curr = this.$el.find('.gridheist-thumb.expanded');
-          $prev = $curr.prevAll('.gridheist-thumb').first();
-          if ($prev.length > 0) {
-            return this.expandThumb($prev, 'up');
-          } else {
-            return this.closeExpander();
-          }
-        } else if (code === 39) {
-          $curr = this.$el.find('.gridheist-thumb.expanded');
-          $next = $curr.nextAll('.gridheist-thumb').first();
-          if ($next.length > 0) {
-            return this.expandThumb($next, 'down');
-          } else {
-            return this.closeExpander();
-          }
-        } else if (code === 27) {
-          return this.closeExpander();
+          this.moveLeft();
+        }
+        if (code === 39) {
+          this.moveRight();
+        }
+        if (code === 27) {
+          return this.closeExpander;
         }
       };
 
@@ -232,7 +265,8 @@
         }
         align = $thumb.position().left + ($thumb.width() / 2);
         bordr = this.options.thumbBorder;
-        this.$expander.append("<div class=\"gridheist-expander-arrow\" style=\"left:" + align + "px;\n  border-width:" + bordr + "px; margin-left:-" + bordr + "px;\">\n</div>");
+        this.$expander.append("<div class=\"gridheist-expander-arrow\" style=\"left:" + align + "px;\n  border-width:" + bordr + "px; margin-left:-" + bordr + "px;\">\n</div>\n<div class=\"gridheist-left\">&lsaquo;</div>\n<div class=\"gridheist-right\">&rsaquo;</div>\n<div class=\"gridheist-close\">&times;</div>");
+        this.$expander.find('.gridheist-left, .gridheist-right, .gridheist-close').attr('unselectable', 'on').css('user-select', 'none').on('selectstart', false);
         this.$expander.append("<div class=\"gridheist-expander-img\">\n  <img src=\"" + imgSrc + "\"/>\n</div>");
         if (!this.$expander.parent().length) {
           $lastThumb.after(this.$expander);
@@ -243,6 +277,7 @@
       };
 
       GridHeist.prototype.closeExpander = function() {
+        this.$el.find('.expanded').removeClass('expanded');
         if (this.$expander) {
           this.$expander.remove();
           this.$expander = void 0;

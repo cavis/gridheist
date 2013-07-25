@@ -1,5 +1,5 @@
 /* ==========================================================
- * gridheist.js v0.0.2
+ * gridheist.js v0.0.3
  * A jQuery plugin to hijack an image gallery, making it great.
  * http://github.com/cavis/gridheist
  * ==========================================================
@@ -47,6 +47,36 @@
   border: 10px solid transparent;
   border-bottom-color: #333;
   bottom: 100%;
+}
+
+/* left/right arrow navigation */
+.gridheist-left, .gridheist-right {
+  background: #666;
+  position: absolute;
+  height: 80px;
+  top: 50%;
+  margin-top: -50px;
+  padding: 10px 2px;
+  color: #fff;
+  font-size: 62px;
+  cursor: pointer;
+}
+.gridheist-left { left: 0; }
+.gridheist-right { right: 0; }
+
+/* close button */
+.gridheist-close {
+  background: #666;
+  position: absolute;
+  height: 30px;
+  width: 30px;
+  top: 0;
+  right: 0;
+  color: #fff;
+  font-size: 28px;
+  line-height: 30px;
+  text-align: center;
+  cursor: pointer;
 }
 
 /* the optional right-sidebar in expander */
