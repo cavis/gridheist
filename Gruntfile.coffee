@@ -79,6 +79,18 @@ module.exports = (grunt) ->
         files: 'src/*.scss'
         tasks: ['sass', 'wrap:css', 'wrap:sass', 'cssmin']
 
+    # fetch some image json
+    http:
+      pixabay:
+        url: 'http://pixabay.com/api/'
+        qs:
+          username:    '<%= grunt.option("username") %>'
+          key:         '<%= grunt.option("key") %>'
+          search_term: '<%= grunt.option("search") %>'
+          image_type:  'photo'
+          per_page:    50
+        dest: 'example/images.json'
+
   # externals
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-contrib-coffee')
@@ -86,8 +98,19 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-contrib-sass')
   grunt.loadNpmTasks('grunt-contrib-uglify')
   grunt.loadNpmTasks('grunt-contrib-watch')
+  grunt.loadNpmTasks('grunt-http')
   grunt.loadNpmTasks('grunt-wrap')
 
-  # tasks
+  # test
+  grunt.registerTask 'prettyjson', ->
+    json = grunt.file.readJSON('example/images.json')
+    grunt.file.delete 'example/images.json'
+    grunt.file.write 'example/images.json', JSON.stringify(json, null, 2)
+  grunt.registerTask 'images', (username, apikey, search='bunnies') ->
+    grunt.option.init username: username, key: apikey, search: search
+    grunt.task.run ['http', 'prettyjson']
+
+  # build
   grunt.registerTask('build', ['clean', 'coffee', 'sass', 'wrap', 'uglify', 'cssmin'])
   grunt.registerTask('default', ['build'])
+

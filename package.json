@@ -13,6 +13,8 @@
     "grunt-contrib-sass": "~0.5.0",
     "grunt-contrib-uglify": "~0.2.4",
     "grunt-contrib-watch": "~0.5.3",
-    "grunt-wrap": "~0.3.0"
+    "grunt-http": "0.0.2",
+    "grunt-wrap": "~0.3.0",
+    "jquery": "*"
   }
 }
