@@ -1,55 +1,45 @@
-/* ==========================================================
+/* ==============================================================
  * gridheist.js v0.0.3
  * A jQuery plugin to hijack an image gallery, making it great.
  * http://github.com/cavis/gridheist
- * ==========================================================
- * Copyright (c) 2013 Ryan Cavis
- * Licensed under http://en.wikipedia.org/wiki/MIT_License
- * ========================================================== */
-
-/* the main event */
+ * ==============================================================
+ * Copyright (c) 2013 cav.is
+ * Licensed under http:#en.wikipedia.org/wiki/MIT_License
+ * ============================================================== */
 .gridheist-gallery {
-  position: relative;
-}
+  position: relative; }
 
-/* thumbnails hide any overflowing img content */
 .gridheist-thumb {
   display: block;
   float: left;
   overflow: hidden;
-  margin: 0 10px 10px 0;
-}
-.gridheist-thumb img {
-  display: block;
-  max-width: none;
-}
+  margin: 0 10px 10px 0; }
+  .gridheist-thumb img {
+    display: block;
+    max-width: none; }
 
-/* expanded viewpanel */
 .gridheist-expander {
   display: block;
   float: left;
   height: 200px;
   width: 100%;
   background: #333;
-  position: relative;
-}
+  position: relative; }
+
 .gridheist-expander-img {
-  text-align: center;
-}
-.gridheist-expander-img img {
-  max-height: 100%;
-  max-width: 100%;
-}
+  text-align: center; }
+  .gridheist-expander-img img {
+    max-height: 100%;
+    max-width: 100%; }
+
 .gridheist-expander-arrow {
   height: 0;
   position: absolute;
   width: 0px;
   border: 10px solid transparent;
   border-bottom-color: #333;
-  bottom: 100%;
-}
+  bottom: 100%; }
 
-/* left/right arrow navigation */
 .gridheist-left, .gridheist-right {
   background: #666;
   position: absolute;
@@ -59,12 +49,14 @@
   padding: 10px 2px;
   color: #fff;
   font-size: 62px;
-  cursor: pointer;
-}
-.gridheist-left { left: 0; }
-.gridheist-right { right: 0; }
+  cursor: pointer; }
 
-/* close button */
+.gridheist-left {
+  left: 0; }
+
+.gridheist-right {
+  right: 0; }
+
 .gridheist-close {
   background: #666;
   position: absolute;
@@ -76,16 +68,14 @@
   font-size: 28px;
   line-height: 30px;
   text-align: center;
-  cursor: pointer;
-}
+  cursor: pointer; }
 
-/* the optional right-sidebar in expander */
 .gridheist-expander-side {
   width: 200px;
   height: 100%;
   float: right;
-  position: relative;
-}
+  position: relative; }
+
 .gridheist-expander-seperator {
   position: absolute;
   left: 0;
@@ -93,9 +83,9 @@
   bottom: 20px;
   background: #444;
   border-right: 1px solid #666;
-  width: 1px;
-}
+  width: 1px; }
+
 .gridheist-expander-content {
   padding: 10px 20px;
-  color: #eee;
-}
+  color: #eee; }
+

@@ -3,8 +3,8 @@
 # A jQuery plugin to hijack an image gallery, making it great.
 # http://github.com/cavis/gridheist
 # ==============================================================
-# Copyright (c) 2013 Ryan Cavis
-# Licensed under http://en.wikipedia.org/wiki/MIT_License
+# Copyright (c) 2013 cav.is
+# Licensed under http:#en.wikipedia.org/wiki/MIT_License
 # ==============================================================
 (($, window) ->
 
@@ -16,6 +16,7 @@
     # public methods
     public:
       update: true
+      test: true
 
     # config options
     defaults:
@@ -283,3 +284,4 @@
         data[option].apply(data, args)
 
 ) window.jQuery, window
+

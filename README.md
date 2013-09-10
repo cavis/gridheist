@@ -19,23 +19,24 @@ Requires [jQuery](http://jquery.com/ "jQuery") version **>= 1.7.0**
 Compiling
 ---------
 
-You'll need to install CoffeeScript using the Node Package Manager...
+You'll need to install the `grunt-cli` using the Node Package Manager...
 
-    npm install -g coffee-script
+    npm install -g grunt-cli
 
-Then you can compile into normal ol' javascript
+Then install the dependencies from `package.json` (if you haven't already)...
 
-    coffee --compile gridheist.coffee
-    coffee --watch --compile gridheist.coffee
+    npm install <module-name-here>
 
-This may end up slightly different, as I always put the header comments at the
-top of my files, but you get the idea.
+Then you can run grunt tasks!
+
+    grunt build
+    grunt watch
 
 
 Getting Started
 ---------------
 
-Include gridheist.js and gridheist.css.  (See example/index.html for an example).
+Include gridheist.js and gridheist.css, or some version of them.  (See example/index.html for an example).
 
 ### In your `<head>` section (next to other CSS):
 

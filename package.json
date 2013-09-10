@@ -1,0 +1,18 @@
+{
+  "title": "gridheist.js",
+  "version": "0.0.3",
+  "description": "A jQuery plugin to hijack an image gallery, making it great.",
+  "homepage": "http://github.com/cavis/gridheist",
+  "author": "cav.is",
+  "private": true,
+  "devDependencies": {
+    "grunt": "latest",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-cssmin": "~0.6.1",
+    "grunt-contrib-sass": "~0.5.0",
+    "grunt-contrib-uglify": "~0.2.4",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-wrap": "~0.3.0"
+  }
+}
