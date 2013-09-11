@@ -44,7 +44,8 @@
       $(window).resize => @doLayout() unless @width == @$el.width()
 
     # refresh thumbs
-    update: ->
+    update: (overrides={}) ->
+      $.extend(@options, overrides)
       @$thumbs = @$el.find(@options.thumbSelector)
       @$thumbs.addClass('gridheist-thumb')
       @doLayout()

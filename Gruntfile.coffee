@@ -89,7 +89,7 @@ module.exports = (grunt) ->
           search_term: '<%= grunt.option("search") %>'
           image_type:  'photo'
           per_page:    50
-        dest: 'example/images.json'
+        dest: 'test/images.json'
 
     # dev server
     connect:
@@ -113,9 +113,9 @@ module.exports = (grunt) ->
 
   # test
   grunt.registerTask 'prettyjson', ->
-    json = grunt.file.readJSON('example/images.json')
-    grunt.file.delete 'example/images.json'
-    grunt.file.write 'example/images.json', JSON.stringify(json, null, 2)
+    json = grunt.file.readJSON('test/images.json')
+    grunt.file.delete 'test/images.json'
+    grunt.file.write 'test/images.json', JSON.stringify(json, null, 2)
   grunt.registerTask 'images', (username, apikey, search='bunnies') ->
     grunt.option.init username: username, key: apikey, search: search
     grunt.task.run ['http', 'prettyjson']

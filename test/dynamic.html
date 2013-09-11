@@ -21,7 +21,6 @@
 
       #gallery { background: #ddd; margin: 160px 100px 0; }
       #gallery:after { content: ""; display: table; clear: both; }
-
     </style>
   </head>
 
@@ -120,7 +119,7 @@
       if (localStorage) {
         $.each(config, function(key, val) {
           if (localStorage.getItem(key)) {
-            config[key] = localStorage.getItem(key);
+            config[key] = parseInt(localStorage.getItem(key));
           }
         });
       }
@@ -132,6 +131,7 @@
         $.each(config, function(key, val) {
           var $input = $('[name="' + key + '"]');
           if (key == 'thumbMaxHeight' && val == 501 || val == null) {
+            config[key] = null;
             $input.val('');
             $input.filter('[data-slider]').simpleSlider('setValue', 501);
           }
@@ -149,6 +149,9 @@
               config[key] = null;
             }
             if (localStorage) localStorage.setItem(key, $(this).val());
+
+            // update gridheist
+            $('#gallery').gridHeist('update', config);
           });
         });
 
@@ -164,7 +167,21 @@
         });
 
         // do it!
-        $('#gallery').gridHeist(config);
+        $.getJSON('images.json', function(data) {
+          var $gallery = $('#gallery').html('');
+
+          if (data && data.hits && data.hits.length) {
+            for (var i=0; i<data.hits.length; i++) {
+              var w = data.hits[i].webformatWidth,
+                  h = data.hits[i].webformatHeight,
+                  sm = data.hits[i].webformatURL,
+                  lg = data.hits[i].webformatURL;
+              $gallery.append('<a class="thumb" href="'+sm+'"><img data-width="'+w+'" data-height="'+h+'" src="'+lg+'"/></a>');
+            }
+
+            $('#gallery').gridHeist(config);
+          }
+        });
 
       });
 

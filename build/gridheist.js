@@ -59,7 +59,11 @@
         });
       }
 
-      GridHeist.prototype.update = function() {
+      GridHeist.prototype.update = function(overrides) {
+        if (overrides == null) {
+          overrides = {};
+        }
+        $.extend(this.options, overrides);
         this.$thumbs = this.$el.find(this.options.thumbSelector);
         this.$thumbs.addClass('gridheist-thumb');
         return this.doLayout();
