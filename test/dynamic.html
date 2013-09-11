@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>GridHeist Dynamic Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Test pretty much all of the gridheist plugin">
+    <meta name="author" content="cavis">
+
+    <!-- styles -->
+    <link href="vendor/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/css/simple-slider.css" rel="stylesheet">
+    <link href="../build/gridheist.css" rel="stylesheet">
+    <style type="text/css">
+      .navbar form { padding: 10px 0 4px; }
+      .navbar h2 { margin: 30px 0; color: #333; }
+      .navbar label { float: left; color: #ccc; font-weight: normal; }
+      .navbar input[readonly] { min-width: 32px; padding: 6px 0px; text-align: center; }
+      .navbar .form-group { margin-bottom: 8px; }
+      .navbar .slider { width: auto; margin-top: 7px; left: 7px; }
+
+      #gallery { background: #ddd; margin: 160px 100px 0; }
+      #gallery:after { content: ""; display: table; clear: both; }
+
+    </style>
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <form class="form-horizontal row" role="form">
+          <div class="col-md-2">
+            <h2>gridheist</h2>
+          </div>
+          <div class="col-md-5">
+
+            <!-- thumbBorder -->
+            <div class="form-group">
+              <label class="col-lg-3 control-label">thumbBorder</label>
+              <div class="col-lg-1">
+                <input name="thumbBorder" class="form-control" type="text" readonly="readonly">
+              </div>
+              <div class="col-lg-8">
+                <input name="thumbBorder" type="text" data-slider="true" data-slider-range="0,100" data-slider-step="1" data-slider-snap="true">
+              </div>
+            </div>
+
+            <!-- thumbMinHeight -->
+            <div class="form-group">
+              <label class="col-lg-3 control-label">thumbMinHeight</label>
+              <div class="col-lg-1">
+                <input name="thumbMinHeight" class="form-control" type="text" readonly="readonly">
+              </div>
+              <div class="col-lg-8">
+                <input name="thumbMinHeight" type="text" data-slider="true" data-slider-range="30,500" data-slider-step="1" data-slider-snap="true">
+              </div>
+            </div>
+
+            <!-- thumbMaxHeight -->
+            <div class="form-group">
+              <label class="col-lg-3 control-label">thumbMaxHeight</label>
+              <div class="col-lg-1">
+                <input name="thumbMaxHeight" class="form-control" type="text" readonly="readonly">
+              </div>
+              <div class="col-lg-8">
+                <input name="thumbMaxHeight" type="text" data-slider="true" data-slider-range="40,501" data-slider-step="1" data-slider-snap="true">
+              </div>
+            </div>
+
+          </div>
+          <div class="col-md-5">
+
+            <!-- expandHeight -->
+            <div class="form-group">
+              <label class="col-lg-3 control-label">expandHeight</label>
+              <div class="col-lg-1">
+                <input name="expandHeight" class="form-control" type="text" readonly="readonly">
+              </div>
+              <div class="col-lg-8">
+                <input name="expandHeight" type="text" data-slider="true" data-slider-range="100,500" data-slider-step="1" data-slider-snap="true">
+              </div>
+            </div>
+
+            <!-- expandSideWidth -->
+            <div class="form-group">
+              <label class="col-lg-3 control-label">expandSideWidth</label>
+              <div class="col-lg-1">
+                <input name="expandSideWidth" class="form-control" type="text" readonly="readonly">
+              </div>
+              <div class="col-lg-8">
+                <input name="expandSideWidth" type="text" data-slider="true" data-slider-range="100,500" data-slider-step="1" data-slider-snap="true">
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- gallery -->
+    <div id="gallery"><h1>Gallery Here</h1></div>
+
+    <!-- javascripts -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="vendor/js/simple-slider.min.js"></script>
+    <script src="vendor/js/bootstrap.min.js"></script>
+    <script src="../build/gridheist.js"></script>
+
+    <!-- initialize the gallery -->
+    <script type="text/javascript">
+      var defaults = {
+        thumbBorder:      10,
+        thumbMinHeight:   200,
+        thumbMaxHeight:   null,
+        expandHeight:     300,
+        expandSideWidth:  200,
+      };
+      var config = $.extend({}, defaults);
+      if (localStorage) {
+        $.each(config, function(key, val) {
+          if (localStorage.getItem(key)) {
+            config[key] = localStorage.getItem(key);
+          }
+        });
+      }
+
+      // dom ready
+      $(function() {
+
+        // set the initial values
+        $.each(config, function(key, val) {
+          var $input = $('[name="' + key + '"]');
+          if (key == 'thumbMaxHeight' && val == 501 || val == null) {
+            $input.val('');
+            $input.filter('[data-slider]').simpleSlider('setValue', 501);
+          }
+          else {
+            $input.val(val);
+            $input.filter('[data-slider]').simpleSlider('setValue', val);
+          }
+
+          // bind to changes
+          $input.on('change', function() {
+            config[key] = $(this).val();
+
+            // allow nulls for thumbMaxHeight
+            if (key == 'thumbMaxHeight' && config[key] == 501) {
+              config[key] = null;
+            }
+            if (localStorage) localStorage.setItem(key, $(this).val());
+          });
+        });
+
+        // sync text fields to sliders
+        $('input[data-slider]').on('slider:changed', function(e, data) {
+          var name = $(this).attr('name');
+          if (name == 'thumbMaxHeight' && data.value == 501) {
+            $('[name="' + name + '"]').val('');
+          }
+          else {
+            $('[name="' + name + '"]').val(data.value);
+          }
+        });
+
+        // do it!
+        $('#gallery').gridHeist(config);
+
+      });
+
+    </script>
+
+  </body>
+</html>

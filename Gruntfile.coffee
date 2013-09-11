@@ -91,9 +91,19 @@ module.exports = (grunt) ->
           per_page:    50
         dest: 'example/images.json'
 
+    # dev server
+    connect:
+      server:
+        options:
+          open: 'test/dynamic.html'
+          keepalive: true
+          # base: 'test'
+
+
   # externals
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-contrib-coffee')
+  grunt.loadNpmTasks('grunt-contrib-connect')
   grunt.loadNpmTasks('grunt-contrib-cssmin')
   grunt.loadNpmTasks('grunt-contrib-sass')
   grunt.loadNpmTasks('grunt-contrib-uglify')
