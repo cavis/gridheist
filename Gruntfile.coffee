@@ -95,10 +95,8 @@ module.exports = (grunt) ->
     connect:
       server:
         options:
-          open: 'test/dynamic.html'
-          keepalive: true
-          # base: 'test'
-
+          port: 8000
+          open: 'http://localhost:8000/test/dynamic.html'
 
   # externals
   grunt.loadNpmTasks('grunt-contrib-clean')
@@ -119,8 +117,9 @@ module.exports = (grunt) ->
   grunt.registerTask 'images', (username, apikey, search='bunnies') ->
     grunt.option.init username: username, key: apikey, search: search
     grunt.task.run ['http', 'prettyjson']
+  grunt.registerTask 'dev', ['connect', 'watch']
 
   # build
-  grunt.registerTask('build', ['clean', 'coffee', 'sass', 'wrap', 'uglify', 'cssmin'])
-  grunt.registerTask('default', ['build'])
+  grunt.registerTask 'build', ['clean', 'coffee', 'sass', 'wrap', 'uglify', 'cssmin']
+  grunt.registerTask 'default', ['build']
 
