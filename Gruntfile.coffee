@@ -88,7 +88,8 @@ module.exports = (grunt) ->
           key:         '<%= grunt.option("key") %>'
           search_term: '<%= grunt.option("search") %>'
           image_type:  'photo'
-          per_page:    50
+          page:        '1'
+          per_page:    '100'
         dest: 'test/images.json'
 
     # dev server
