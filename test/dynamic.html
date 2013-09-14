@@ -13,9 +13,9 @@
     <link href="../build/gridheist.css" rel="stylesheet">
     <style type="text/css">
       .navbar form { padding: 10px 0 4px; }
-      .navbar h2 { margin: 30px 0; color: #333; }
+      .navbar h2.reset { margin: 30px 0; color: #333; cursor: pointer; }
       .navbar label { float: left; color: #ccc; font-weight: normal; }
-      .navbar input[readonly] { min-width: 32px; padding: 6px 0px; text-align: center; }
+      .navbar input[readonly] { min-width: 40px; padding: 6px 0px; text-align: center; }
       .navbar .form-group { margin-bottom: 8px; }
       .navbar .slider { width: auto; margin-top: 7px; left: 7px; }
 
@@ -30,7 +30,7 @@
       <div class="container">
         <form class="form-horizontal row" role="form">
           <div class="col-md-2">
-            <h2>gridheist</h2>
+            <h2 class="reset">gridheist</h2>
           </div>
           <div class="col-md-5">
 
@@ -63,32 +63,36 @@
                 <input name="thumbMaxHeight" class="form-control" type="text" readonly="readonly">
               </div>
               <div class="col-lg-8">
-                <input name="thumbMaxHeight" type="text" data-slider="true" data-slider-range="40,501" data-slider-step="1" data-slider-snap="true">
+                <input name="thumbMaxHeight" type="text" data-slider="true" data-slider-range="40,500" data-slider-step="1" data-slider-snap="true">
               </div>
             </div>
 
           </div>
           <div class="col-md-5">
 
-            <!-- expandHeight -->
+            <!-- layoutType -->
             <div class="form-group">
-              <label class="col-lg-3 control-label">expandHeight</label>
-              <div class="col-lg-1">
-                <input name="expandHeight" class="form-control" type="text" readonly="readonly">
-              </div>
-              <div class="col-lg-8">
-                <input name="expandHeight" type="text" data-slider="true" data-slider-range="100,500" data-slider-step="1" data-slider-snap="true">
+              <label class="col-lg-3 control-label">layout</label>
+              <div class="col-lg-3">
+                <select class="form-control" name="layoutType">
+                  <option value="fluid">Fluid</option>
+                  <option value="fixed">Fixed</option>
+                </select>
               </div>
             </div>
 
-            <!-- expandSideWidth -->
-            <div class="form-group">
-              <label class="col-lg-3 control-label">expandSideWidth</label>
+            <!-- layoutValue -->
+            <div class="form-group ">
+              <label class="col-lg-3 control-label">margins</label>
               <div class="col-lg-1">
-                <input name="expandSideWidth" class="form-control" type="text" readonly="readonly">
+                <input name="layoutFluidValue" class="form-control layout-fluid" type="text" readonly="readonly">
+                <input name="layoutFixedValue" class="form-control layout-fixed" type="text" readonly="readonly">
               </div>
-              <div class="col-lg-8">
-                <input name="expandSideWidth" type="text" data-slider="true" data-slider-range="100,500" data-slider-step="1" data-slider-snap="true">
+              <div class="col-lg-8 layout-fluid">
+                <input name="layoutFluidValue" type="text" data-slider="true" data-slider-range="0,300" data-slider-step="1" data-slider-snap="true">
+              </div>
+              <div class="col-lg-8 layout-fixed">
+                <input name="layoutFixedValue" type="text" data-slider="true" data-slider-range="400,1600" data-slider-step="1" data-slider-snap="true">
               </div>
             </div>
 
@@ -103,89 +107,9 @@
     <!-- javascripts -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="vendor/js/simple-slider.min.js"></script>
-    <script src="vendor/js/bootstrap.min.js"></script>
+    <script src="vendor/js/underscore-min.js"></script>
     <script src="../build/gridheist.js"></script>
-
-    <!-- initialize the gallery -->
-    <script type="text/javascript">
-      var defaults = {
-        thumbBorder:      10,
-        thumbMinHeight:   200,
-        thumbMaxHeight:   null,
-        expandHeight:     300,
-        expandSideWidth:  200,
-      };
-      var config = $.extend({}, defaults);
-      if (localStorage) {
-        $.each(config, function(key, val) {
-          if (localStorage.getItem(key)) {
-            config[key] = parseInt(localStorage.getItem(key));
-          }
-        });
-      }
-
-      // dom ready
-      $(function() {
-
-        // set the initial values
-        $.each(config, function(key, val) {
-          var $input = $('[name="' + key + '"]');
-          if (key == 'thumbMaxHeight' && val == 501 || val == null) {
-            config[key] = null;
-            $input.val('');
-            $input.filter('[data-slider]').simpleSlider('setValue', 501);
-          }
-          else {
-            $input.val(val);
-            $input.filter('[data-slider]').simpleSlider('setValue', val);
-          }
-
-          // bind to changes
-          $input.on('change', function() {
-            config[key] = $(this).val();
-
-            // allow nulls for thumbMaxHeight
-            if (key == 'thumbMaxHeight' && config[key] == 501) {
-              config[key] = null;
-            }
-            if (localStorage) localStorage.setItem(key, $(this).val());
-
-            // update gridheist
-            $('#gallery').gridHeist('update', config);
-          });
-        });
-
-        // sync text fields to sliders
-        $('input[data-slider]').on('slider:changed', function(e, data) {
-          var name = $(this).attr('name');
-          if (name == 'thumbMaxHeight' && data.value == 501) {
-            $('[name="' + name + '"]').val('');
-          }
-          else {
-            $('[name="' + name + '"]').val(data.value);
-          }
-        });
-
-        // do it!
-        $.getJSON('images.json', function(data) {
-          var $gallery = $('#gallery').html('');
-
-          if (data && data.hits && data.hits.length) {
-            for (var i=0; i<data.hits.length; i++) {
-              var w = data.hits[i].webformatWidth,
-                  h = data.hits[i].webformatHeight,
-                  sm = data.hits[i].webformatURL,
-                  lg = data.hits[i].webformatURL;
-              $gallery.append('<a class="thumb" href="'+sm+'"><img data-width="'+w+'" data-height="'+h+'" src="'+lg+'"/></a>');
-            }
-
-            $('#gallery').gridHeist(config);
-          }
-        });
-
-      });
-
-    </script>
+    <script src="dynamic.js"></script>
 
   </body>
 </html>
