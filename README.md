@@ -109,6 +109,7 @@ Methods
 ------------
 
 `update()` - Force a re-layout of the gallery
+
 `update(options)` - Alter any config options, and force a re-layout of the gallery.  Options must be an object containing only the option keys you want to change.
 
 
