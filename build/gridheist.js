@@ -1,5 +1,5 @@
 // ==============================================================
-// gridheist.js v0.0.3
+// gridheist.js v0.0.4
 // A jQuery plugin to hijack an image gallery, making it great.
 // http://github.com/cavis/gridheist
 // ==============================================================
@@ -14,8 +14,7 @@
     var GridHeist;
     GridHeist = (function() {
       GridHeist.prototype["public"] = {
-        update: true,
-        test: true
+        update: true
       };
 
       GridHeist.prototype.defaults = {
@@ -24,6 +23,7 @@
         thumbMinHeight: 200,
         thumbMaxHeight: null,
         preloadImages: true,
+        expander: true,
         expandHeight: 300,
         expandSideWidth: 200,
         expandSideRender: false
@@ -64,8 +64,13 @@
           overrides = {};
         }
         $.extend(this.options, overrides);
+        if (this.$thumbs) {
+          this.$thumbs.unwrap();
+        }
         this.$thumbs = this.$el.find(this.options.thumbSelector);
         this.$thumbs.addClass('gridheist-thumb');
+        this.$thumbs.wrapAll('<div class="gridheist-wrap"></div>');
+        this.$wrap = this.$el.find('.gridheist-wrap');
         return this.doLayout();
       };
 
@@ -73,6 +78,7 @@
         var margin;
         this.closeExpander();
         this.width = this.$el.width();
+        this.$wrap.width(this.width);
         this.rows = [];
         margin = "0 " + this.options.thumbBorder + "px " + this.options.thumbBorder + "px 0";
         this.$thumbs.css('margin', margin);
@@ -95,7 +101,7 @@
               };
             }
             if (_this.options.thumbMaxHeight && imgHeight > _this.options.thumbMaxHeight) {
-              imgWidth = (_this.options.thumbMaxHeight / imgHeight) * imgWidth;
+              imgWidth = Math.floor((_this.options.thumbMaxHeight / imgHeight) * imgWidth);
               imgHeight = _this.options.thumbMaxHeight;
               $img.attr('width', imgWidth);
               $img.attr('height', imgHeight);
@@ -189,7 +195,7 @@
         var $thumb;
         e.preventDefault();
         $thumb = $(e.currentTarget);
-        if (!$thumb.hasClass('expanded')) {
+        if (this.options.expander && !$thumb.hasClass('expanded')) {
           return this.expandThumb($thumb);
         }
       };

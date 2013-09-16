@@ -24,3 +24,10 @@ GridHeist Versions
 * Add thumbMaxHeight option to scale down image heights
 * Add left/right/close buttons to expander
 * Unselectable buttons
+
+0.0.4
+------------
+* Add `expander` option to hide the expander altogether
+* Fix bug with browsers initially reporting an incorrect `$el.width()`, messing up the first layout
+* Fix image-jumping when browser window gets smaller (adds an inner `.gridheist-wrap` container to the `$el`)
+* Various optimizations, so complex and awesome that you totally wouldn't appreciate them

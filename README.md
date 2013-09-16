@@ -6,7 +6,7 @@ A jQuery plugin to hijack an image gallery, making it great.
 
 Check out [the dynamic test page](http://cav.is/gridheist/test/dynamic.html "Dynamic Test").
 
-![Alt text](http://cav.is/img/gridheist-example.png "GridHeist Demo")
+![Alt text](http://cav.is/img/gridheist-dynamic-example.png "GridHeist Test")
 
 Requirements
 ------------
@@ -19,7 +19,7 @@ Requires [jQuery](http://jquery.com/ "jQuery") version **>= 1.7.0**
 Compiling
 ---------
 
-You'll need to install the `grunt-cli` using the Node Package Manager...
+If you so choose to compile/test/develop yourself, you'll need to install the `grunt-cli` using the Node Package Manager...
 
     npm install -g grunt-cli
 
@@ -31,12 +31,13 @@ Then you can run grunt tasks!
 
     grunt build
     grunt watch
+    grunt dev
 
 
 Getting Started
 ---------------
 
-Include gridheist.js and gridheist.css, or some version of them.  (See example/index.html for an example).
+Include `build/gridheist.js` and `build/gridheist.css`, or some version of them.  (See example/index.html for an example).
 
 ### In your `<head>` section (next to other CSS):
 
@@ -58,9 +59,9 @@ GridHeist is a jQuery plugin, so just call the function on a selector to create 
         $('#gallery').gridHeist(options);
     });
 
-Galleries should have semi-standardized markup.  For now, all your thumbnails (the inner img) should have THE SAME HEIGHT if you want this to work. The following is pretty standard:
+Galleries should have semi-standardized markup.  You should apply whatever layout-css you want to the outer container (`#gallery` in this example).  The following is pretty standard:
 
-    <div id="gallery">
+    <div id="gallery" style="margin:0 100px; width:auto;">
       <a href="img/something1_big.png">
         <img src="img/something1_thumb.png"/>
       </a>
@@ -69,7 +70,9 @@ Galleries should have semi-standardized markup.  For now, all your thumbnails (t
       </a>
     </div>
 
-If you want things to load snappier, I'd recommend pre-populating the `data-width` and `data-height` of the thumbnail images, so we don't have to wait for the `<img>` to load before we can get the native dimensions.
+Be aware that, for performance reasons, gridheist will wrap all the thumbnails `a` in a container `<div class="gridheist-wrap"></div>`.  So make sure your styling is scoped correctly!
+
+If you want things to load snappier, I'd recommend pre-populating the `data-width` and `data-height` of the thumbnail images, so we don't have to wait for the `<img>` to load before we can get the native dimensions.  Note that this is the height/width of the THUMBNAIL, not of the full-sized image.
 
     <div id="gallery">
       <a href="img/something1_big.png">
@@ -93,6 +96,8 @@ These options can be passed in when you create the gridheist.  Numbers are proba
 
 `preloadImages` - Preloads the big-kid images (set by the href attribute) after the thumbnails are all loaded - __(default: `true`)__
 
+`expander` - Enable the image expander - __(default: true)__
+
 `expandHeight` - Height of the expander-row - __(default: `300`)__
 
 `expandSideRender` - Function to return markup for the expander sidebar; passed the jQuery `$thumb` object - __(default: `false`)__
@@ -103,7 +108,14 @@ These options can be passed in when you create the gridheist.  Numbers are proba
 Methods
 ------------
 
-TODO
+`update()` - Force a re-layout of the gallery
+`update(options)` - Alter any config options, and force a re-layout of the gallery.  Options must be an object containing only the option keys you want to change.
+
+
+Changes
+-----------------------
+
+Times they are a-changin'.  Check out the [changelog](CHANGELOG.md).
 
 
 Issues and Contributing

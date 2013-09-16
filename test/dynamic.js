@@ -5,6 +5,7 @@ var defaults = {
   thumbBorder:      10,
   thumbMinHeight:   100,
   thumbMaxHeight:   200,
+  expander:         false,
   expandHeight:     300,
   expandSideWidth:  200,
   // non-gridheist
@@ -15,13 +16,21 @@ var defaults = {
 var config = _.extend({}, defaults);
 
 // load any stored configs
-if (localStorage) {
-  _.each(config, function(val, key) {
-    if (localStorage.getItem(key)) {
-      config[key] = localStorage.getItem(key);
-      config[key] = parseInt(config[key]) || config[key];
-    }
-  });
+if (localStorage && localStorage.getItem('config')) {
+  var json = JSON.parse(localStorage.getItem('config'));
+  if (json) {
+    config = _.extend(config, json);
+  }
+}
+
+// set the layout type
+var updateLayoutType = function() {
+  if (config.layoutType == 'fluid') {
+    $('#gallery').css({marginLeft: config.layoutFluidValue, marginRight: config.layoutFluidValue, width: 'auto'});
+  }
+  else {
+    $('#gallery').css({marginLeft: 'auto', marginRight: 'auto', width: config.layoutFixedValue});
+  }
 }
 
 // dom => config
@@ -29,13 +38,7 @@ var updateConfig = function() {
   config.layoutType = $('select[name="layoutType"]').val();
   config.layoutFluidValue = parseInt( $('input[name="layoutFluidValue"]').val() )
   config.layoutFixedValue = parseInt( $('input[name="layoutFixedValue"]').val() )
-
-  if (config.layoutType == 'fluid') {
-    $('#gallery').css({marginLeft: config.layoutFluidValue, marginRight: config.layoutFluidValue, width: 'auto'});
-  }
-  else {
-    $('#gallery').css({marginLeft: 'auto', marginRight: 'auto', width: config.layoutFixedValue});
-  }
+  updateLayoutType();
 
   config.thumbBorder    = parseInt( $('input[name="thumbBorder"]').val() );
   config.thumbMinHeight = parseInt( $('input[name="thumbMinHeight"]').val() );
@@ -44,9 +47,7 @@ var updateConfig = function() {
 
   // update storage
   if (localStorage) {
-    _.each(config, function(val, key) {
-      localStorage.setItem(key, val);
-    });
+    localStorage.setItem('config', JSON.stringify(config));
   }
 }
 
@@ -76,6 +77,7 @@ var updateDom = function() {
 // dom it!
 $(function() {
   updateDom();
+  updateLayoutType();
 
   // insert images
   $.getJSON('images.json', function(data) {
@@ -90,7 +92,7 @@ $(function() {
         $gallery.append('<a class="thumb" href="'+sm+'"><img data-width="'+w+'" data-height="'+h+'" src="'+lg+'"/></a>');
       }
 
-      $('#gallery').gridHeist(config);
+      $gallery.gridHeist(config);
     }
   });
 

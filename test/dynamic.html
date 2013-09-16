@@ -22,12 +22,11 @@
       .navbar .form-group { margin-bottom: 8px; }
       .navbar .slider { width: auto; margin-top: 7px; left: 7px; }
 
-      #gallery { background: #ddd; margin: 340px 100px 0; }
-      @media (min-width: 992px) {
-        #gallery { margin-top: 160px; }
-      }
+      #gallery { margin: 340px 100px 0; }
+      .gridheist-wrap { background: #ddd; }
+      @media (min-width: 992px) { #gallery { margin-top: 160px; } }
 
-      #gallery:after { content: ""; display: table; clear: both; }
+      footer { text-align: center; margin: 30px 0; color: #999; }
     </style>
   </head>
 
@@ -90,16 +89,23 @@
 
             <!-- layoutValue -->
             <div class="form-group ">
-              <label class="col-sm-3 control-label">margins</label>
-              <div class="col-sm-1">
-                <input name="layoutFluidValue" class="form-control layout-fluid" type="text" readonly="readonly">
-                <input name="layoutFixedValue" class="form-control layout-fixed" type="text" readonly="readonly">
+              <div class="layout-fluid">
+                <label class="col-sm-3 control-label">margins</label>
+                <div class="col-sm-1">
+                  <input name="layoutFluidValue" class="form-control" type="text" readonly="readonly">
+                </div>
+                <div class="col-sm-8">
+                  <input name="layoutFluidValue" type="text" data-slider="true" data-slider-range="0,300" data-slider-step="1" data-slider-snap="true">
+                </div>
               </div>
-              <div class="col-sm-8 layout-fluid">
-                <input name="layoutFluidValue" type="text" data-slider="true" data-slider-range="0,300" data-slider-step="1" data-slider-snap="true">
-              </div>
-              <div class="col-sm-8 layout-fixed">
-                <input name="layoutFixedValue" type="text" data-slider="true" data-slider-range="400,1600" data-slider-step="1" data-slider-snap="true">
+              <div class="layout-fixed">
+                <label class="col-sm-3 control-label">width</label>
+                <div class="col-sm-1">
+                  <input name="layoutFixedValue" class="form-control" type="text" readonly="readonly">
+                </div>
+                <div class="col-sm-8">
+                  <input name="layoutFixedValue" type="text" data-slider="true" data-slider-range="400,1600" data-slider-step="1" data-slider-snap="true">
+                </div>
               </div>
             </div>
 
@@ -110,6 +116,11 @@
 
     <!-- gallery -->
     <div id="gallery"><h1>Gallery Here</h1></div>
+
+    <!-- credz -->
+    <footer>
+      <p>images courtesy of <a href="http://pixabay.com/">pixabay</a></p>
+    </footer>
 
     <!-- javascripts -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>

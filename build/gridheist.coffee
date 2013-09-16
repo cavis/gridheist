@@ -1,5 +1,5 @@
 # ==============================================================
-# gridheist.js v0.0.3
+# gridheist.js v0.0.4
 # A jQuery plugin to hijack an image gallery, making it great.
 # http://github.com/cavis/gridheist
 # ==============================================================
@@ -16,7 +16,6 @@
     # public methods
     public:
       update: true
-      test: true
 
     # config options
     defaults:
@@ -25,6 +24,7 @@
       thumbMinHeight:   200
       thumbMaxHeight:   null
       preloadImages:    true
+      expander:         true
       expandHeight:     300
       expandSideWidth:  200
       expandSideRender: false
@@ -54,14 +54,18 @@
     # refresh thumbs
     update: (overrides={}) ->
       $.extend(@options, overrides)
+      @$thumbs.unwrap() if @$thumbs
       @$thumbs = @$el.find(@options.thumbSelector)
       @$thumbs.addClass('gridheist-thumb')
+      @$thumbs.wrapAll('<div class="gridheist-wrap"></div>')
+      @$wrap = @$el.find('.gridheist-wrap')
       @doLayout()
 
     # re-distribute the thumbnails
     doLayout: ->
       @closeExpander()
       @width = @$el.width()
+      @$wrap.width(@width)
       @rows = []
 
       # pad everything according to thumbBorder
@@ -84,7 +88,7 @@
 
           # optionally scale DOWN to height
           if @options.thumbMaxHeight && imgHeight > @options.thumbMaxHeight
-            imgWidth = (@options.thumbMaxHeight / imgHeight) * imgWidth
+            imgWidth = Math.floor (@options.thumbMaxHeight / imgHeight) * imgWidth
             imgHeight = @options.thumbMaxHeight
             $img.attr('width', imgWidth)
             $img.attr('height', imgHeight)
@@ -167,7 +171,7 @@
     clickHandler: (e) =>
       e.preventDefault()
       $thumb = $(e.currentTarget)
-      @expandThumb($thumb) unless $thumb.hasClass('expanded')
+      @expandThumb($thumb) if @options.expander && !$thumb.hasClass('expanded')
 
     # flip to the left
     moveLeft: (e) =>
