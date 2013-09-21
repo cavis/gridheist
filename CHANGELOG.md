@@ -31,3 +31,8 @@ GridHeist Versions
 * Fix bug with browsers initially reporting an incorrect `$el.width()`, messing up the first layout
 * Fix image-jumping when browser window gets smaller (adds an inner `.gridheist-wrap` container to the `$el`)
 * Various optimizations, so complex and awesome that you totally wouldn't appreciate them
+
+0.0.5
+------------
+* New preloading strategy and options for image expander
+* Test for preloading

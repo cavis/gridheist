@@ -1,5 +1,5 @@
 // ==============================================================
-// gridheist.js v0.0.4
+// gridheist.js v0.0.5
 // A jQuery plugin to hijack an image gallery, making it great.
 // http://github.com/cavis/gridheist
 // ==============================================================
@@ -22,11 +22,13 @@
         thumbBorder: 10,
         thumbMinHeight: 200,
         thumbMaxHeight: null,
-        preloadImages: true,
         expander: true,
         expandHeight: 300,
         expandSideWidth: 200,
-        expandSideRender: false
+        expandSideRender: false,
+        preload: false,
+        preloadBefore: 2,
+        preloadAfter: 6
       };
 
       function GridHeist(el, options) {
@@ -122,13 +124,8 @@
               return _this.processThumb(idx + 1, rowIdx, rowWidth);
             }
           });
-        } else {
-          if (this.rows[rowIdx]) {
-            this.layoutRow(rowIdx, rowWidth);
-          }
-          if (this.options.preloadImages) {
-            return this.preload();
-          }
+        } else if (this.rows[rowIdx]) {
+          return this.layoutRow(rowIdx, rowWidth);
         }
       };
 
@@ -185,12 +182,6 @@
         }
       };
 
-      GridHeist.prototype.preload = function() {
-        return this.$thumbs.each(function(idx, thumb) {
-          return (new Image()).src = $(thumb).attr('href');
-        });
-      };
-
       GridHeist.prototype.clickHandler = function(e) {
         var $thumb;
         e.preventDefault();
@@ -245,6 +236,9 @@
         imgSrc = $thumb.attr('href');
         $lastThumb = this.rows[rowIdx].thumbs[this.rows[rowIdx].thumbs.length - 1];
         scrollTo = null;
+        if (this.options.preload) {
+          this.preload($thumb);
+        }
         this.$el.find('.gridheist-thumb.expanded').removeClass('expanded');
         $thumb.addClass('expanded');
         if (doScroll) {
@@ -292,6 +286,21 @@
           this.$expander.remove();
           this.$expander = void 0;
           return $(document).off('keydown', this.keyHandler);
+        }
+      };
+
+      GridHeist.prototype.preload = function($thumb) {
+        var idx;
+        idx = this.$thumbs.index($thumb);
+        if (idx > -1) {
+          this.$thumbs.slice(idx, idx + this.options.preloadAfter + 1).not('.gridheist-preloaded').each(function(idx, thumb) {
+            $(thumb).addClass('gridheist-preloaded');
+            return (new Image()).src = $(thumb).attr('href');
+          });
+          return this.$thumbs.slice(Math.max(idx - this.options.preloadBefore, 0), idx).not('.gridheist-preloaded').each(function(idx, thumb) {
+            $(thumb).addClass('gridheist-preloaded');
+            return (new Image()).src = $(thumb).attr('href');
+          });
         }
       };
 

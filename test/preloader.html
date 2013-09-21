@@ -20,6 +20,16 @@
 
       #gallery { margin: 0 100px; }
       .gridheist-wrap { background: #ddd; }
+      .gridheist-thumb { position: relative; }
+      .gridheist-preloaded:after {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        top: 0;
+        left: 0;
+        background: #027BFF;
+      }
 
       body { padding-top: 80px; }
       header, footer { text-align: center; margin: 30px 0; color: #999; }

@@ -94,8 +94,6 @@ These options can be passed in when you create the gridheist.  Numbers are proba
 
 `thumbMaxHeight` - Maximum height of a row of thumbnails - __(default: `null`)__
 
-`preloadImages` - Preloads the big-kid images (set by the href attribute) after the thumbnails are all loaded - __(default: `true`)__
-
 `expander` - Enable the image expander - __(default: true)__
 
 `expandHeight` - Height of the expander-row - __(default: `300`)__
@@ -103,6 +101,12 @@ These options can be passed in when you create the gridheist.  Numbers are proba
 `expandSideRender` - Function to return markup for the expander sidebar; passed the jQuery `$thumb` object - __(default: `false`)__
 
 `expandSideWidth` - Width of the expander sidebar (if expandSideRender is passed) - __(default: `200`)__
+
+`preload` - Agressively preload full-size images when rows are expanded - __(default: `false`)__
+
+`preloadBefore` - The number of images before the expanded row to preload - __(default: 2)__
+
+`preloadAfter` - The number of images after the expanded row to preload - __(default: 6)__
 
 
 Methods

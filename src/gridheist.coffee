@@ -15,11 +15,13 @@
       thumbBorder:      10
       thumbMinHeight:   200
       thumbMaxHeight:   null
-      preloadImages:    true
       expander:         true
       expandHeight:     300
       expandSideWidth:  200
       expandSideRender: false
+      preload:          false
+      preloadBefore:    2
+      preloadAfter:     6
 
     # initialize it!
     constructor: (el, options) ->
@@ -103,10 +105,9 @@
           else
             @processThumb(idx + 1, rowIdx, rowWidth)
 
-      # layout last non-full row, and start pre-loading the big images
-      else
-        @layoutRow(rowIdx, rowWidth) if @rows[rowIdx]
-        @preload() if @options.preloadImages
+      # layout last non-full row
+      else if @rows[rowIdx]
+        @layoutRow(rowIdx, rowWidth)
 
     # expand a row to fill the full width
     layoutRow: (rowIdx, rowWidth) ->
@@ -155,10 +156,6 @@
           .attr
             src: $img.attr('src')
 
-    # preload the big images
-    preload: ->
-      @$thumbs.each (idx, thumb) -> (new Image()).src = $(thumb).attr('href')
-
     # handle clicking on a thumbnail
     clickHandler: (e) =>
       e.preventDefault()
@@ -190,6 +187,9 @@
       imgSrc     = $thumb.attr('href')
       $lastThumb = @rows[rowIdx].thumbs[@rows[rowIdx].thumbs.length - 1]
       scrollTo   = null
+
+      # run any preloading methods for this thumb
+      @preload($thumb) if @options.preload
 
       # helper class to indicate what's expanded
       @$el.find('.gridheist-thumb.expanded').removeClass('expanded')
@@ -263,6 +263,21 @@
         @$expander.remove()
         @$expander = undefined
         $(document).off('keydown', @keyHandler)
+
+    # preload the big ol' images
+    preload: ($thumb) ->
+      idx = @$thumbs.index($thumb)
+      if idx > -1
+
+        # after thumbs
+        @$thumbs.slice(idx, idx + @options.preloadAfter + 1).not('.gridheist-preloaded').each (idx, thumb) ->
+          $(thumb).addClass('gridheist-preloaded')
+          (new Image()).src = $(thumb).attr('href')
+
+        # before thumbs
+        @$thumbs.slice(Math.max(idx - @options.preloadBefore, 0), idx).not('.gridheist-preloaded').each (idx, thumb) ->
+          $(thumb).addClass('gridheist-preloaded')
+          (new Image()).src = $(thumb).attr('href')
 
   #
   # define the plugin function
