@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>GridHeist Dynamic Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Test pretty much all of the gridheist plugin">
+    <meta name="author" content="cavis">
+
+    <!-- styles -->
+    <link href="vendor/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/css/simple-slider.css" rel="stylesheet">
+    <link href="../build/gridheist.css" rel="stylesheet">
+    <style type="text/css">
+      .navbar form { padding: 10px 0 4px; }
+      .navbar h2.reset { margin: 0; color: #333; cursor: pointer; }
+      .navbar label { float: left; color: #ccc; font-weight: normal; font-size: 12px; line-height: 22px; }
+      .navbar input { width: 40px; padding: 6px 0px; text-align: center; }
+      .navbar .form-group { margin-bottom: 8px; }
+
+      #gallery { margin: 0 100px; }
+      .gridheist-wrap { background: #ddd; }
+
+      body { padding-top: 80px; }
+      header, footer { text-align: center; margin: 30px 0; color: #999; }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <form class="form-horizontal row" role="form" method="get" action="">
+          <div class="col-sm-3">
+            <h2 class="reset">gridheist</h2>
+          </div>
+
+          <!-- preloadBefore -->
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="col-sm-8 control-label">preloadBefore</label>
+              <div class="col-sm-4">
+                <input name="preloadBefore" class="form-control" type="text" value="0">
+              </div>
+            </div>
+          </div>
+
+          <!-- preloadAfter -->
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="col-sm-8 control-label">preloadAfter</label>
+              <div class="col-sm-4">
+                <input name="preloadAfter" class="form-control" type="text" value="0">
+              </div>
+            </div>
+          </div>
+
+          <!-- submit -->
+          <div class="col-sm-3" style="text-align:right">
+            <button class="btn btn-medium">Change</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+    <header>
+      <p>all images on this page are cachebusted!</p>
+    </header>
+
+    <!-- gallery -->
+    <div id="gallery"><h1>Gallery Here</h1></div>
+
+    <!-- credz -->
+    <footer>
+      <p>images courtesy of <a href="http://pixabay.com/">pixabay</a></p>
+    </footer>
+
+    <!-- javascripts -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="vendor/js/simple-slider.min.js"></script>
+    <script src="vendor/js/underscore-min.js"></script>
+    <script src="../build/gridheist.js"></script>
+    <script src="preloader.js"></script>
+
+  </body>
+</html>

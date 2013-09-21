@@ -80,7 +80,7 @@ $(function() {
   updateLayoutType();
 
   // insert images
-  $.getJSON('images.json', function(data) {
+  $.getJSON('dynamic.json', function(data) {
     var $gallery = $('#gallery').html('');
 
     if (data && data.hits && data.hits.length) {
@@ -89,7 +89,7 @@ $(function() {
             h = data.hits[i].webformatHeight,
             sm = data.hits[i].webformatURL,
             lg = data.hits[i].webformatURL;
-        $gallery.append('<a class="thumb" href="'+sm+'"><img data-width="'+w+'" data-height="'+h+'" src="'+lg+'"/></a>');
+        $gallery.append('<a class="thumb" href="'+lg+'"><img data-width="'+w+'" data-height="'+h+'" src="'+sm+'"/></a>');
       }
 
       $gallery.gridHeist(config);
