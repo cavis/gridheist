@@ -12,6 +12,7 @@
 
 .gridheist-thumb {
   display: inline-block;
+  vertical-align: bottom;
   overflow: hidden;
   margin: 0 10px 10px 0; }
   .gridheist-thumb img {
