@@ -96,11 +96,17 @@ These options can be passed in when you create the gridheist.  Numbers are proba
 
 `expander` - Enable the image expander - __(default: true)__
 
-`expandHeight` - Height of the expander-row - __(default: `300`)__
+`expandRatio` - The percentage of viewport height for the expander-row - __(default: `0.60`)__
+
+`expandMaxHeight` - Maximum height of the expander-row - __(default: `500`)__
+
+`expandMinHeight` - Minimum height of the expander-row - __(default: `100`)__
 
 `expandSideRender` - Function to return markup for the expander sidebar; passed the jQuery `$thumb` object - __(default: `false`)__
 
 `expandSideWidth` - Width of the expander sidebar (if expandSideRender is passed) - __(default: `200`)__
+
+`scroller` - Selector for the element within which the gallery will be scrolling - __(default: `window`)__
 
 `preload` - Agressively preload full-size images when rows are expanded - __(default: `false`)__
 

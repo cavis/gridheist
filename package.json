@@ -1,6 +1,6 @@
 {
   "title": "gridheist.js",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A jQuery plugin to hijack an image gallery, making it great.",
   "homepage": "http://github.com/cavis/gridheist",
   "author": "cav.is",

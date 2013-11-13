@@ -6,7 +6,6 @@ var config = {
   thumbMinHeight:   100,
   thumbMaxHeight:   150,
   expander:         true,
-  expandHeight:     300,
   expandSideWidth:  200,
   preload:          true,
   preloadBefore:    1,

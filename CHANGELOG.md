@@ -36,3 +36,10 @@ GridHeist Versions
 ------------
 * New preloading strategy and options for image expander
 * Test for preloading
+
+0.0.6
+------------
+* Dynamic expander height!
+* Customizable scrolling container (doesn't always have to be `window`)
+* Scroll to the correct place when opening expander (so the entire expander is visible)
+* Vertically and Horizontally center images in the expander, in case they don't entirely fit

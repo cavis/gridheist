@@ -1,5 +1,5 @@
 // ==============================================================
-// gridheist.js v0.0.5
+// gridheist.js v0.0.6
 // A jQuery plugin to hijack an image gallery, making it great.
 // http://github.com/cavis/gridheist
 // ==============================================================
@@ -23,9 +23,12 @@
         thumbMinHeight: 200,
         thumbMaxHeight: null,
         expander: true,
-        expandHeight: 300,
+        expandRatio: 0.60,
+        expandMaxHeight: 500,
+        expandMinHeight: 100,
         expandSideWidth: 200,
         expandSideRender: false,
+        scroller: 'window',
         preload: false,
         preloadBefore: 2,
         preloadAfter: 6
@@ -73,6 +76,10 @@
         this.$thumbs.addClass('gridheist-thumb');
         this.$thumbs.wrapAll('<div class="gridheist-wrap"></div>');
         this.$wrap = this.$el.find('.gridheist-wrap');
+        this.$scroller = $(this.options.scroller);
+        if (this.options.scroller === 'window') {
+          this.$scroller = $(window);
+        }
         return this.doLayout();
       };
 
@@ -227,10 +234,10 @@
         }
       };
 
-      GridHeist.prototype.expandThumb = function($thumb, doScroll) {
-        var $lastThumb, align, bordr, diff, imgSrc, rowIdx, scrollTo, width;
-        if (doScroll == null) {
-          doScroll = null;
+      GridHeist.prototype.expandThumb = function($thumb, scrollMode) {
+        var $lastThumb, align, bordr, diff, expBottom, expHeight, expTop, imgSrc, rowIdx, scrollTo, scrollerOff, width, winBottom, winHeight, winTop;
+        if (scrollMode == null) {
+          scrollMode = null;
         }
         rowIdx = $thumb.data('row');
         imgSrc = $thumb.attr('href');
@@ -241,28 +248,44 @@
         }
         this.$el.find('.gridheist-thumb.expanded').removeClass('expanded');
         $thumb.addClass('expanded');
-        if (doScroll) {
-          scrollTo = $('body').scrollTop();
+        if (scrollMode) {
+          scrollTo = this.$scroller.scrollTop();
           diff = this.options.thumbBorder + $thumb.height();
-          if (doScroll === 'up') {
+          if (scrollMode === 'up') {
             scrollTo -= diff;
           } else {
             scrollTo += diff;
           }
         }
         if (!this.$expander) {
-          doScroll = false;
           this.$expander = $('<div class="gridheist-expander"></div>');
           $(document).on('keydown', this.keyHandler);
         } else if (!this.$expander.prev().is($lastThumb)) {
           this.$expander.remove();
           this.$expander = $('<div class="gridheist-expander"></div>');
         } else {
-          doScroll = false;
+          scrollTo = null;
           this.$expander.html('');
         }
+        winHeight = this.$scroller.height();
+        expHeight = this.options.expandRatio * winHeight;
+        expHeight = Math.max(expHeight, this.options.expandMinHeight);
+        expHeight = Math.min(expHeight, this.options.expandMaxHeight);
         this.$expander.css('margin-bottom', this.options.thumbBorder);
-        this.$expander.css('height', this.options.expandHeight);
+        this.$expander.css('height', expHeight);
+        if (!scrollMode) {
+          winTop = this.$scroller.scrollTop();
+          winBottom = winTop + winHeight;
+          expTop = $thumb.offset().top + this.options.thumbBorder + $thumb.height();
+          scrollerOff = this.$scroller.offset();
+          if (scrollerOff) {
+            expTop += this.$scroller.scrollTop() - scrollerOff.top;
+          }
+          expBottom = expTop + expHeight + this.options.thumbBorder;
+          if (expBottom > winBottom) {
+            scrollTo = winTop + expBottom - winBottom;
+          }
+        }
         if (this.options.expandSideRender) {
           width = this.options.expandSideWidth;
           this.$expander.append("<div class=\"gridheist-expander-side\" style=\"width:" + width + "px\">\n  <div class=\"gridheist-expander-seperator\"></div>\n  <div class=\"gridheist-expander-content\">\n    " + (this.options.expandSideRender($thumb)) + "\n  </div>\n</div>");
@@ -271,12 +294,12 @@
         bordr = this.options.thumbBorder;
         this.$expander.append("<div class=\"gridheist-expander-arrow\" style=\"left:" + align + "px;\n  border-width:" + bordr + "px; margin-left:-" + bordr + "px;\">\n</div>\n<div class=\"gridheist-left\">&lsaquo;</div>\n<div class=\"gridheist-right\">&rsaquo;</div>\n<div class=\"gridheist-close\">&times;</div>");
         this.$expander.find('.gridheist-left, .gridheist-right, .gridheist-close').attr('unselectable', 'on').css('user-select', 'none').on('selectstart', false);
-        this.$expander.append("<div class=\"gridheist-expander-img\">\n  <img src=\"" + imgSrc + "\"/>\n</div>");
+        this.$expander.append("<div class=\"gridheist-expander-ct\">\n  <div class=\"gridheist-expander-img\">\n    <img src=\"" + imgSrc + "\" style=\"max-height:" + expHeight + "px\"/>\n  </div>\n</div>");
         if (!this.$expander.parent().length) {
           $lastThumb.after(this.$expander);
         }
-        if (doScroll) {
-          return $('body').scrollTop(scrollTo);
+        if (scrollTo !== null) {
+          return this.$scroller.scrollTop(scrollTo);
         }
       };
 

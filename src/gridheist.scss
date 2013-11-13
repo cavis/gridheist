@@ -26,8 +26,18 @@
   position: relative;
   font-size: 14px;
 }
+.gridheist-wrap {
+  position: relative;
+}
+.gridheist-expander-ct {
+  display: table;
+  height: 100%;
+  width: 100%;
+}
 .gridheist-expander-img {
+  display: table-cell;
   text-align: center;
+  vertical-align: middle;
 
   img {
     max-height: 100%;

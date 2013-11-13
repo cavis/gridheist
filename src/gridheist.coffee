@@ -16,9 +16,12 @@
       thumbMinHeight:   200
       thumbMaxHeight:   null
       expander:         true
-      expandHeight:     300
+      expandRatio:      0.60
+      expandMaxHeight:  500
+      expandMinHeight:  100
       expandSideWidth:  200
       expandSideRender: false
+      scroller:         'window'
       preload:          false
       preloadBefore:    2
       preloadAfter:     6
@@ -53,6 +56,8 @@
       @$thumbs.addClass('gridheist-thumb')
       @$thumbs.wrapAll('<div class="gridheist-wrap"></div>')
       @$wrap = @$el.find('.gridheist-wrap')
+      @$scroller = $(@options.scroller)
+      @$scroller = $(window) if @options.scroller == 'window'
       @doLayout()
 
     # re-distribute the thumbnails
@@ -182,7 +187,7 @@
       @closeExpander if code == 27 # escape
 
     # render the row-expander for a thumbnail
-    expandThumb: ($thumb, doScroll=null) ->
+    expandThumb: ($thumb, scrollMode=null) ->
       rowIdx     = $thumb.data('row')
       imgSrc     = $thumb.attr('href')
       $lastThumb = @rows[rowIdx].thumbs[@rows[rowIdx].thumbs.length - 1]
@@ -196,26 +201,45 @@
       $thumb.addClass('expanded')
 
       # compute any scrolling we're going to do
-      if doScroll
-        scrollTo = $('body').scrollTop()
+      if scrollMode
+        scrollTo = @$scroller.scrollTop()
         diff = @options.thumbBorder + $thumb.height()
-        if doScroll == 'up' then scrollTo -= diff else scrollTo += diff
+        if scrollMode == 'up' then scrollTo -= diff else scrollTo += diff
 
       # render expander container, bind key events
       if !@$expander
-        doScroll = false # never!
         @$expander = $('<div class="gridheist-expander"></div>')
         $(document).on('keydown', @keyHandler)
       else if !@$expander.prev().is($lastThumb)
         @$expander.remove()
         @$expander = $('<div class="gridheist-expander"></div>')
       else
-        doScroll = false # never!
+        scrollTo = null # never!
         @$expander.html('')
+
+      # dynamically calculate the expander height
+      winHeight = @$scroller.height()
+      expHeight = @options.expandRatio * winHeight
+      expHeight = Math.max(expHeight, @options.expandMinHeight)
+      expHeight = Math.min(expHeight, @options.expandMaxHeight)
 
       # update interior style
       @$expander.css('margin-bottom', @options.thumbBorder)
-      @$expander.css('height', @options.expandHeight)
+      @$expander.css('height', expHeight)
+
+      # make sure the expander is visible (unless in left/right mode)
+      unless scrollMode
+        winTop    = @$scroller.scrollTop()
+        winBottom = winTop + winHeight
+        expTop    = $thumb.offset().top + @options.thumbBorder + $thumb.height()
+
+        # hacky - but if not window scrolling, it's hard to calculate
+        scrollerOff = @$scroller.offset()
+        expTop += @$scroller.scrollTop() - scrollerOff.top if scrollerOff
+
+        expBottom = expTop + expHeight + @options.thumbBorder
+        if expBottom > winBottom
+          scrollTo = (winTop + expBottom - winBottom)
 
       # optional sidebar (content dynamically created)
       if @options.expandSideRender
@@ -247,14 +271,16 @@
 
       # add the image
       @$expander.append("""
-        <div class="gridheist-expander-img">
-          <img src="#{imgSrc}"/>
+        <div class="gridheist-expander-ct">
+          <div class="gridheist-expander-img">
+            <img src="#{imgSrc}" style="max-height:#{expHeight}px"/>
+          </div>
         </div>
       """)
 
       # optionally render and scroll
       $lastThumb.after(@$expander) unless @$expander.parent().length
-      $('body').scrollTop(scrollTo) if doScroll
+      @$scroller.scrollTop(scrollTo) unless scrollTo == null
 
     # close down the expander and remove key listeners
     closeExpander: ->
