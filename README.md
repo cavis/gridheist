@@ -4,7 +4,7 @@ GridHeist
 
 A jQuery plugin to hijack an image gallery, making it great.
 
-Check out [the dynamic test page](http://cav.is/gridheist/test/dynamic.html "Dynamic Test").
+Check out [the dynamic test page](http://cav.is/gridheist/test/dynamic.html "Dynamic Test").  Or the [image preloading test page](http://cav.is/gridheist/test/preloader.html "Image Preloading").
 
 ![Alt text](http://cav.is/img/gridheist-dynamic-example.png "GridHeist Test")
 
